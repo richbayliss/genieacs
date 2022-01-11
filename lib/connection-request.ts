@@ -322,3 +322,5 @@ export async function xmppConnectionRequest(
   }
   return "Incorrect connection request credentials";
 }
+
+xmppConnectionRequest("acs@aquaplace.co.uk", "", 1000, false, "acs").then(console.log).catch(console.error);

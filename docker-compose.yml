@@ -4,6 +4,9 @@ services:
       dockerfile: Dockerfile
       context: .
     command: [ "/genieacs/bin/genieacs-ui", "--ui-jwt-secret", "secret"]
+    environment:
+      - GENIEACS_XMPP_JID=acs@aquaplace.co.uk
+      - GENIEACS_XMPP_PASSWORD=1234
     network_mode: host
 
   cwmp:
