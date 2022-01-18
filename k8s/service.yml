@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: genieacs-cwmp-svc
+spec:
+  selector:
+    app: genieacs-cwmp
+  ports:
+  - port: 7547
+    targetPort: 7547
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: genieacs-mongo-svc
+spec:
+  selector:
+    app: genieacs-mongo
+  ports:
+  - port: 27017
+    targetPort: 27017
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: genieacs-ui-svc
+spec:
+  selector:
+    app: genieacs-ui
+  ports:
+  - port: 3000
+    targetPort: 3000

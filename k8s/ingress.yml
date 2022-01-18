@@ -1,0 +1,35 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: genieacs-ingress
+  labels:
+    name: genieacs-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  tls:
+    - hosts:
+        - genieacs.richbayliss.dev
+        - cwmp.genieacs.richbayliss.dev
+      secretName: genieacs-tls-secret
+  rules:
+  - host: genieacs.richbayliss.dev
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: genieacs-ui-svc
+            port: 
+              number: 3000
+  - host: cwmp.genieacs.richbayliss.dev
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: genieacs-cwmp-svc
+            port: 
+              number: 7547
