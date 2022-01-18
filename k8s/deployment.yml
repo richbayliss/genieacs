@@ -1,0 +1,115 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: genieacs-cwmp
+spec:
+  selector:
+    matchLabels:
+      app: genieacs-cwmp
+  template:
+    metadata:
+      labels:
+        app: genieacs-cwmp
+    spec:
+      containers:
+        - name: genieacs-cwmp
+          image: ghcr.io/richbayliss/genieacs/cwmp:latest
+          ports:
+            - containerPort: 7547
+          env:
+            - name: GENIEACS_MONGODB_CONNECTION_URL
+              value: mongodb://genieacs-mongo-svc:27017/genieacs
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: genieacs-mongo
+spec:
+  selector:
+    matchLabels:
+      app: genieacs-mongo
+  template:
+    metadata:
+      labels:
+        app: genieacs-mongo
+    spec:
+      containers:
+        - name: genieacs-mongo
+          image: mongo
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - mountPath: /data/db
+              name: mongo-data
+      volumes:
+        - name: mongo-data
+          persistentVolumeClaim:
+            claimName: genieacs-mongo-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: genieacs-ui
+spec:
+  selector:
+    matchLabels:
+      app: genieacs-ui
+  template:
+    metadata:
+      labels:
+        app: genieacs-ui
+    spec:
+      containers:
+        - name: genieacs-ui
+          image: ghcr.io/richbayliss/genieacs/ui:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: GENIEACS_UI_JWT_SECRET
+              value: secret
+            - name: GENIEACS_MONGODB_CONNECTION_URL
+              value: mongodb://genieacs-mongo-svc:27017/genieacs
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: genieacs-nbi
+spec:
+  selector:
+    matchLabels:
+      app: genieacs-nbi
+  template:
+    metadata:
+      labels:
+        app: genieacs-nbi
+    spec:
+      containers:
+        - name: genieacs-nbi
+          image: ghcr.io/richbayliss/genieacs/nbi:latest
+          ports:
+            - containerPort: 7557
+          env:
+            - name: GENIEACS_MONGODB_CONNECTION_URL
+              value: mongodb://genieacs-mongo-svc:27017/genieacs
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: genieacs-fs
+spec:
+  selector:
+    matchLabels:
+      app: genieacs-fs
+  template:
+    metadata:
+      labels:
+        app: genieacs-fs
+    spec:
+      containers:
+        - name: genieacs-fs
+          image: ghcr.io/richbayliss/genieacs/fs:latest
+          ports:
+            - containerPort: 7567
+          env:
+            - name: GENIEACS_MONGODB_CONNECTION_URL
+              value: mongodb://genieacs-mongo-svc:27017/genieacs
